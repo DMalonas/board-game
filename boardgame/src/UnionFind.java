@@ -19,25 +19,57 @@ public class UnionFind {
     }
 
     void makeSet(int v) {
-        if (parent[v] != -1) return; // item v already belongs in a set
+        if (parent[v] != -1) {
+            return; // item v already belongs in a set
+        }
         parent[v] = v;
         size[v] = 1;
         K++;
     }
 
     int find(int v) {
-        /* enter your code */
-        return 0; // change appropriately
+        // Recursively search the parent until finding the root
+        int p; // Eventually the root
+        if (parent[v] != v) {
+            p = find(parent[v]);
+            parent[v] = p; // Before returning the root, make it my parent. "Compression"
+            return p;
+        }
+        return v;
     }
 
     void unite(int v, int u) {
-        /* enter your code */
+        // Algorithm slide 22. "Weighted Fast Union"
+        int k = find(v);
+        int l = find(u);
+        if (k != l) {
+            if (size[k] >= size[l]) {
+                parent[l] = k;
+                size[k] += size[l];
+                size[l] = 0;
+            } else {
+                parent[k] = l;
+                size[l] += size[k];
+                size[k] = 0;
+            }
+        }
     }
 
     int setCount() {
-        /* enter your code */
-        return 0; // change appropriately
+        // Just counts the number of roots
+        int i, count = 0;
+        for (i = 0; i < N; i++) {
+            if (parent[i] == i) {
+                count++;
+            }
+        }
+        return count;
+
     }
+
+    // public void setK(int numOfClusters) {
+    //     this.K = numOfClusters;
+    // }
 
     int itemCount() {
         return K;
